@@ -1,15 +1,23 @@
-import cors from 'cors';
-import dotenv from 'dotenv';
-import express from 'express';
-import routes from './hello/hello.routes';
-
-dotenv.config();
-
-const app = express();
-app.use(cors());
+/* eslint-disable no-console */
+import 'reflect-metadata';
+import { createApp } from './utils/createApp';
+import { AppDataSource } from './utils/data-source';
 const port = process.env.NODE_ENV === 'production' ? process.env.API_URL : 3001;
 
-//configure routes
-routes(app);
+const main = async () => {
+  console.log(`Running application in ${process.env.NODE_ENV} mode.`);
+  try {
+    const app = createApp();
+    AppDataSource.initialize()
+      .then(async () => {
+        app.listen(port, () =>
+          console.log(`Express server has started on http://localhost:${port}.`)
+        );
+      })
+      .catch((error: object) => console.log(error));
+  } catch (error) {
+    console.log(error);
+  }
+};
 
-app.listen(port, () => console.log(`App is running on port ${port}`));
+main();
