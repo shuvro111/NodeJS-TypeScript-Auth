@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import 'reflect-metadata';
+import { AppDataSource } from './config/ormconfig';
 import { createApp } from './utils/createApp';
-import { AppDataSource } from './utils/data-source';
 const port = process.env.NODE_ENV === 'production' ? process.env.API_URL : 3001;
 
 const main = async () => {

@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { DataSource, DataSourceOptions } from 'typeorm';
-import { User } from '../user/user.model';
+import User from '../user/entities/User';
 
 const options: DataSourceOptions = {
   type: 'postgres',
@@ -9,10 +9,11 @@ const options: DataSourceOptions = {
   username: 'postgres',
   password: 'postgres',
   database: 'postgres',
-  synchronize: true,
+  synchronize: false,
   logging: false,
   entities: [User],
-  migrations: [],
+  migrations: [__dirname + '/../migrations/*{.ts,.js}'],
+  migrationsRun: true,
   subscribers: [],
 };
 
