@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import passport from 'passport';
+import { loginUser } from './auth.controllers';
 
 const router = Router();
 
@@ -22,10 +23,6 @@ router.get(
   (req, res) => res.redirect('http://localhost:3000/menu')
 );
 
-router.get('/status', (req, res) => {
-  return req.user
-    ? res.send(req.user)
-    : res.status(401).send({ msg: 'Unauthorized' });
-});
+router.post('/login', async (req, res) => await loginUser(req, res)); //login user
 
 export default router;

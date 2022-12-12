@@ -5,6 +5,7 @@ import session from 'express-session';
 import passport from 'passport';
 import routes from '../routes';
 import enableGoogleStrategy from './strategies/google';
+import { enableJwtStrategy } from './strategies/passport-jwt';
 
 dotenv.config();
 export const createApp = (): Express => {
@@ -39,6 +40,7 @@ export const createApp = (): Express => {
 
   //Enable Strtegies
   enableGoogleStrategy();
+  enableJwtStrategy();
 
   //Pre Configure Path To /api
   app.use('/api', routes);

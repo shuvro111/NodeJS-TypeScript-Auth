@@ -1,12 +1,9 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
+import { sendResponse } from '../utils/sendResponse';
 import User from './entities/User';
 
 //say hello
-export const sayHelloHandler = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const sayHelloHandler = (req: Request, res: Response) => {
   res.status(200).send({
     success: true,
     message: 'Hello World!',
@@ -23,21 +20,27 @@ export const getUserByEmail = async (req: Request, res: Response) => {
     });
 
     if (user) {
-      return res.status(200).json({
+      sendResponse({
+        res,
+        statusCode: 200,
         success: true,
-        message: 'User Fetched Successfully',
-        user,
+        message: 'User fetched succesfully',
+        data: user,
       });
     } else {
-      return res.status(404).json({
+      sendResponse({
+        res,
+        statusCode: 404,
         success: false,
-        message: `User Doesn't Exist`,
+        message: 'User does not exist',
       });
     }
   } catch (error) {
-    return res.status(200).json({
+    sendResponse({
+      res,
+      statusCode: 500,
       success: false,
-      message: error,
+      message: (error as Error).message,
     });
   }
 };
@@ -52,21 +55,26 @@ export const getUserById = async (req: Request, res: Response) => {
     });
 
     if (user) {
-      return res.status(200).json({
+      sendResponse({
+        res,
+        statusCode: 200,
         success: true,
-        message: 'User Fetched Successfully',
-        user,
+        message: 'User fetched successfully',
       });
     } else {
-      return res.status(404).json({
+      sendResponse({
+        res,
+        statusCode: 404,
         success: false,
-        message: `User Doesn't Exist`,
+        message: 'User does not exist',
       });
     }
   } catch (error) {
-    return res.status(200).json({
+    sendResponse({
+      res,
+      statusCode: 200,
       success: false,
-      message: error,
+      message: (error as Error).message,
     });
   }
 };
@@ -76,17 +84,19 @@ export const getAllUsers = async (req: Request, res: Response) => {
   try {
     const users = await User.find();
     const totalUsers = await User.count();
-
-    return res.status(200).json({
+    sendResponse({
+      res,
+      statusCode: 200,
       success: true,
-      message: 'User Fetched Successfully',
-      users,
-      totalUsers,
+      message: 'User fetched successfully',
+      data: { ...users, totalUsers },
     });
   } catch (error) {
-    return res.status(200).json({
+    sendResponse({
+      res,
+      statusCode: 500,
       success: false,
-      message: error,
+      message: (error as Error).message,
     });
   }
 };
@@ -106,21 +116,27 @@ export const createUser = async (req: Request, res: Response) => {
       const user = User.create(req.body);
       await user.save();
 
-      return res.status(200).json({
+      sendResponse({
+        res,
         success: true,
-        message: 'User Created Successfully',
-        user,
+        statusCode: 200,
+        message: 'User created successfully',
+        data: user,
       });
     } catch (error) {
-      return res.status(200).json({
+      sendResponse({
+        res,
         success: false,
-        message: error,
+        message: (error as Error).message,
+        statusCode: 500,
       });
     }
   } else {
-    return res.status(200).json({
+    sendResponse({
+      res,
       success: false,
-      message: 'User Already Exists',
+      statusCode: 500,
+      message: 'User already exists',
     });
   }
 };
@@ -140,21 +156,27 @@ export const updateUser = async (req: Request, res: Response) => {
       await User.update(user.id, req.body);
       await user.reload();
 
-      return res.status(200).json({
+      sendResponse({
+        res,
         success: true,
-        message: 'User Updated Successfully',
-        user,
+        statusCode: 200,
+        message: 'User updated successfully',
+        data: user,
       });
     } catch (error) {
-      return res.status(200).json({
+      sendResponse({
+        res,
+        statusCode: 500,
         success: false,
-        message: error,
+        message: (error as Error).message,
       });
     }
   } else {
-    return res.status(404).json({
+    sendResponse({
+      res,
+      statusCode: 500,
       success: false,
-      message: `User Doesn't  Exist`,
+      message: 'User does not  exist',
     });
   }
 };
@@ -185,9 +207,11 @@ export const deleteUser = async (req: Request, res: Response) => {
       });
     }
   } else {
-    return res.status(404).json({
+    sendResponse({
+      res,
+      statusCode: 404,
       success: false,
-      message: `User Doesn't  Exist`,
+      message: 'User does not exist',
     });
   }
 };
